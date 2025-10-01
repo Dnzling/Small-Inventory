@@ -1,0 +1,120 @@
+<div class="max-w-6xl mx-auto p-6 space-y-8">
+  <!-- Add Inventory Form -->
+  <form @submit.prevent="submitForm"
+    class="p-6 bg-white rounded-2xl shadow-md space-y-6 hover:shadow-lg transition duration-200">
+    <!-- Header -->
+    <h2 class="text-xl font-bold text-gray-800 flex items-center gap-2">
+      Add New Item
+    </h2>
+
+    <!-- Input Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <!-- Name -->
+      <div class="relative">
+        <input id="name" v-model="itemData.name" type="text" placeholder=" " required
+          class="peer w-full border border-gray-300 rounded px-4 pt-5 pb-2 focus:outline-none focus:ring-2 focus:ring-blue-400" />
+        <label for="name" class="absolute left-4 top-1.5 text-gray-500 text-xs transition-all 
+           peer-placeholder-shown:top-3.5 peer-placeholder-shown:text-gray-400 
+           peer-placeholder-shown:text-base peer-focus:top-1.5 
+           peer-focus:text-xs peer-focus:text-blue-500">
+          Product Name
+        </label>
+      </div>
+
+      <!-- Category -->
+      <div class="relative">
+        <input required id="category" v-model="itemData.category" type="text" placeholder=" "
+          class="peer w-full border border-gray-300 rounded px-4 pt-5 pb-2 focus:outline-none focus:ring-2 focus:ring-blue-400" />
+        <label for="category" class="absolute left-4 top-1.5 text-gray-500 text-xs transition-all 
+           peer-placeholder-shown:top-3.5 peer-placeholder-shown:text-gray-400 
+           peer-placeholder-shown:text-base peer-focus:top-1.5 
+           peer-focus:text-xs peer-focus:text-blue-500">
+          Category
+        </label>
+      </div>
+
+      <!-- Quantity -->
+      <div class="relative">
+        <input required id="quantity" v-model="itemData.quantity" type="number" min="1" step="1"
+          onkeydown="return !['.','e','E','+','-'].includes(event.key)" placeholder=""
+          class="peer w-full border border-gray-300 rounded px-4 pt-5 pb-2 focus:outline-none focus:ring-2 focus:ring-blue-400" />
+        <label for="quantity" class="absolute left-4 top-1.5 text-gray-500 text-xs transition-all 
+           peer-placeholder-shown:top-3.5 peer-placeholder-shown:text-gray-400 
+           peer-placeholder-shown:text-base peer-focus:top-1.5 
+           peer-focus:text-xs peer-focus:text-blue-500">
+          Quantity
+        </label>
+      </div>
+
+      <!-- Price -->
+      <div class="relative">
+        <input required id="price" v-model="itemData.price" type="number" placeholder=" " step="0.01" min="1"
+          class="peer w-full border border-gray-300 rounded px-4 pt-5 pb-2 focus:outline-none focus:ring-2 focus:ring-blue-400" />
+        <label for="price" class="absolute left-4 top-1.5 text-gray-500 text-xs transition-all 
+           peer-placeholder-shown:top-3.5 peer-placeholder-shown:text-gray-400 
+           peer-placeholder-shown:text-base peer-focus:top-1.5 
+           peer-focus:text-xs peer-focus:text-blue-500">
+          Price
+        </label>
+      </div>
+
+    </div>
+
+    <!-- Buttons -->
+    <div class="flex gap-4 justify-end pt-4 border-t">
+      <button type="submit" class="px-5 py-2.5 rounded-xl bg-blue-600 text-white font-medium 
+               hover:bg-blue-700 shadow-sm hover:shadow-lg transition" :disabled="!itemData.name">
+        Add Item
+      </button>
+    </div>
+  </form>
+
+  <!-- CSV Controls -->
+  <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition duration-200">
+    <h2 class="text-xl font-bold text-gray-800 flex items-center gap-2">
+      List of Items
+    </h2>
+    <div class="flex items-center justify-between py-6">
+      <div class="space-x-3">
+        <button @click="downloadCSV" class="font-semibold bg-green-500 text-white px-4 py-2 rounded-xl hover:bg-green-600 transition">
+          Download CSV
+        </button>
+            <label class="font-semibold cursor-pointer bg-gray-200 text-gray-700 px-4 py-2.5 rounded-xl hover:bg-gray-300 transition">
+          Upload CSV
+          <input type="file" @change="uploadCSV" class="hidden" />
+        </label>
+      </div>
+    </div>
+    <div class="overflow-x-auto bg-white rounded-2xl ">
+      <table class="min-w-full border-collapse">
+        <thead class="bg-gray-100">
+          <tr>
+            <th class="px-4 py-3 text-left font-semibold text-gray-700">Name</th>
+            <th class="px-4 py-3 text-left font-semibold text-gray-700">Category</th>
+            <th class="px-4 py-3 text-left font-semibold text-gray-700">Quantity</th>
+            <th class="px-4 py-3 text-left font-semibold text-gray-700">Price</th>
+            <th class="px-4 py-3 text-left font-semibold text-gray-700">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="item in items" :key="item.id" class="odd:bg-white even:bg-gray-50 hover:bg-blue-50 transition">
+            <td class="px-4 py-3">{{ item.name }}</td>
+            <td class="px-4 py-3">{{ item.category }}</td>
+            <td class="px-4 py-3">{{ item.quantity }}</td>
+            <td class="px-4 py-3">$ {{ item.price }}</td>
+            <td class="px-4 py-3 space-x-2">
+              <button @click="editItem(item.id)"
+                class="px-3 py-1.5 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition text-sm">
+                Edit
+              </button>
+              <button @click="deleteItem(item.id)"
+                class="px-3 py-1.5 bg-red-500 text-white rounded-lg hover:bg-red-600 transition text-sm">
+                Delete
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

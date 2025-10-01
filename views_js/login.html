@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <script src="../js/Vue.js"></script>
+    <script src="../js/tailwindcss.js"></script>
+    <script src="../resources/sweetalert2@11.js"></script>
+    <style>
+        .bg-gradient-animate {
+            background: linear-gradient(-45deg, #1e3a8a, #3b82f6, #6366f1, #a855f7, #06b6d4);
+            background-size: 500% 500%;
+            animation: gradientBG 15s ease infinite;
+        }
+
+        @keyframes gradientBG {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            25% {
+                background-position: 100% 50%;
+            }
+
+            50% {
+                background-position: 100% 100%;
+            }
+
+            75% {
+                background-position: 0% 100%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app" class="min-h-screen flex items-center justify-center bg-gradient-animate">
+        <div class="w-full max-w-sm bg-white p-8 rounded-lg shadow-md hover:shadow-xl transition duration-200">
+            <!-- Logo / Icon -->
+            <div class="flex justify-center text-6xl mb-4">
+                📦
+            </div>
+
+            <!-- Title -->
+            <h2 class="text-center text-3xl font-bold mb-2 text-gray-800">
+                Inventory Box
+            </h2>
+
+            <!-- Intro text -->
+            <p class="text-center text-sm text-gray-500 mb-6">
+                Please enter your credentials to continue
+            </p>
+
+            <!-- Form -->
+            <form @submit.prevent="login" class="space-y-4">
+                <div class="space-y-4 w-full max-w-sm mx-auto">
+                    <!-- Email -->
+                    <div class="relative">
+                        <input type="email" v-model="email" id="email" placeholder=" " required
+                            class="peer w-full border border-gray-300 rounded px-4 pt-5 pb-2 focus:outline-none focus:ring-2 focus:ring-blue-400" />
+                        <label for="email"
+                            class="absolute left-4 top-1.5 text-gray-500 text-xs transition-all peer-placeholder-shown:top-3.5 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-base peer-focus:top-1.5 peer-focus:text-xs peer-focus:text-blue-500">
+                            Email
+                        </label>
+                    </div>
+
+                    <!-- Password -->
+                    <div class="relative">
+                        <input type="password" v-model="password" id="password" placeholder=" " required
+                            class="peer w-full border border-gray-300 rounded px-4 pt-5 pb-2 focus:outline-none focus:ring-2 focus:ring-blue-400" />
+                        <label for="password"
+                            class="absolute left-4 top-1.5 text-gray-500 text-xs transition-all peer-placeholder-shown:top-3.5 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-base peer-focus:top-1.5 peer-focus:text-xs peer-focus:text-blue-500">
+                            Password
+                        </label>
+                    </div>
+
+                    <div class="flex flex-col gap-4 mt-6">
+                        <!-- Login (Primary Button) -->
+                        <button type="submit"
+                            class="w-full bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-semibold py-3 rounded-xl shadow-md hover:from-blue-600 hover:to-indigo-700 active:scale-95 transition-all duration-300 border-b">
+                            Login
+                        </button>
+                        <hr>
+                        <!-- Register (Secondary Button) -->
+                        <button type="button" onclick="window.location.href='register.html'"
+                            class="w-full bg-white text-blue-600 font-semibold py-3 rounded-xl border border-blue-500 shadow-sm hover:bg-blue-50 active:scale-95 transition-all duration-300">
+                            Register
+                        </button>
+                    </div>
+
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <script>
+        const { createApp, ref } = Vue;
+
+        const app = createApp({
+            setup() {
+                const email = ref('');
+                const password = ref('');
+
+                const login = async () => {
+                    console.log("Logging in:", email.value);
+
+                    try {
+                        const body = new URLSearchParams({
+                            email: email.value,
+                            password: password.value
+                        });
+
+                        const res = await fetch("../api/login.php", {
+
+                            method: "POST",
+                            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                            body
+                        });
+
+                        const text = await res.text();
+
+                        if (text.includes("success")) {
+                            Swal.fire({
+                                icon: "success",
+                                title: "Login Successful",
+                                text: "Redirecting to your dashboard...",
+                                timer: 2000,
+                                showConfirmButton: false
+                            }).then(() => {
+                                window.location.href = "inventory.php";
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: "error",
+                                title: "Wrong Credentials",
+                                text: "Invalid Email or Password, try again.",
+                                timer: 1500,
+                                showConfirmButton: false
+                            })
+                        }
+                    } catch (err) {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Oops...",
+                            text: "Error: " + err
+                        });
+                    }
+                };
+
+                return { email, password, login };
+            }
+        });
+
+        app.mount("#app");
+    </script>
+</body>
+
+</html>

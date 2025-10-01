@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My First Vue SPA</title>
+  <!-- Local Tailwind CSS in js/ subfolder -->
+  <script src="./js/tailwindcss.js"></script>
+</head>
+<body>
+  <div id="app" class="min-h-screen bg-gray-100">
+    <!-- Navigation -->
+    <nav class="bg-blue-500 p-4 text-white">
+      <router-link to="/" class="mx-4 hover:underline">Home</router-link>
+      <router-link to="/about" class="mx-4 hover:underline">About</router-link>
+      <router-link to="/contact" class="mx-4 hover:underline">Contact</router-link>
+    </nav>
+    <!-- Page Content -->
+    <router-view class="p-6"></router-view>
+  </div>
+
+  <!-- Local Vue.js in js/ subfolder -->
+  <script src="./js/Vue.js"></script>
+  <!-- Local Vue Router in js/ subfolder -->
+  <script src="./js/VueRouter.js"></script>
+  <script>
+    const { createApp, ref } = Vue;
+    const { createRouter, createWebHashHistory } = VueRouter;
+
+    // Home Component
+    const Home = {
+      setup() {
+        const message = ref('Welcome to Home Page');
+        return { message };
+      },
+      template: `
+        <div class="text-center">
+          <h1 class="text-2xl font-bold text-blue-600">{{ message }}</h1>
+        </div>
+      `
+    };
+
+    // About Component
+    const About = {
+      setup() {
+        const message = ref('Welcome to About Page');
+        return { message };
+      },
+      template: `
+        <div class="text-center">
+          <h1 class="text-2xl font-bold text-blue-600">{{ message }}</h1>
+        </div>
+      `
+    };
+
+    // Contact Component
+    const Contact = {
+      setup() {
+        const message = ref('Welcome to Contact Page');
+        return { message };
+      },
+      template: `
+        <div class="text-center">
+          <h1 class="text-2xl font-bold text-blue-600">{{ message }}</h1>
+        </div>
+      `
+    };
+
+    // Set up routes
+    const routes = [
+      { path: '/', component: Home },
+      { path: '/about', component: About },
+      { path: '/contact', component: Contact }
+    ];
+
+    // Create router with hash history
+    const router = createRouter({
+      history: createWebHashHistory(),
+      routes
+    });
+
+    // Create and mount app
+    const app = createApp({});
+    app.use(router);
+    app.mount('#app');
+  </script>
+</body>
+</html>

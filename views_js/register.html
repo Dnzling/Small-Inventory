@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register</title>
+  <script src="../js/Vue.js"></script>
+  <script src="../js/tailwindcss.js"></script>
+  <script src="../resources/sweetalert2@11.js"></script>
+  <style>
+    .bg-gradient-animate {
+      background: linear-gradient(-45deg, #1e3a8a, #3b82f6, #6366f1, #a855f7, #06b6d4);
+      background-size: 500% 500%;
+      animation: gradientBG 15s ease infinite;
+    }
+
+    @keyframes gradientBG {
+      0% {
+        background-position: 0% 50%;
+      }
+
+      25% {
+        background-position: 100% 50%;
+      }
+
+      50% {
+        background-position: 100% 100%;
+      }
+
+      75% {
+        background-position: 0% 100%;
+      }
+
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app" class="min-h-screen flex items-center justify-center bg-gradient-animate">
+    <div class="w-full max-w-md bg-white p-8 rounded-xl shadow-md hover:shadow-2xl transition duration-200">
+      <!-- Title -->
+      <div class="text-center mb-6">
+        <h2 class="text-2xl font-bold text-gray-800">Create Account</h2>
+        <p class="text-sm text-gray-500">Fill in your details to register</p>
+      </div>
+
+      <!-- Form -->
+      <form @submit.prevent="register" class="space-y-5">
+
+        <!-- Username -->
+        <div class="relative">
+          <input id="username" v-model="username" type="text" placeholder=" " required
+            class="peer w-full border border-gray-300 rounded px-4 pt-5 pb-2 focus:outline-none focus:ring-2 focus:ring-blue-400" />
+          <label for="username"
+            class="absolute left-4 top-1.5 text-gray-500 text-xs transition-all peer-placeholder-shown:top-3.5 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-base peer-focus:top-1.5 peer-focus:text-xs peer-focus:text-blue-500">
+            Username
+          </label>
+        </div>
+
+        <!-- Email -->
+        <div class="relative">
+          <input id="email" v-model="email" type="email" placeholder=" " required
+            class="peer w-full border border-gray-300 rounded px-4 pt-5 pb-2 focus:outline-none focus:ring-2 focus:ring-blue-400" />
+          <label for="email"
+            class="absolute left-4 top-1.5 text-gray-500 text-xs transition-all peer-placeholder-shown:top-3.5 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-base peer-focus:top-1.5 peer-focus:text-xs peer-focus:text-blue-500">
+            Email
+          </label>
+        </div>
+
+        <!-- Password -->
+        <div class="relative">
+          <input id="password" v-model="password" type="password" placeholder=" " required
+            class="peer w-full border border-gray-300 rounded px-4 pt-5 pb-2 focus:outline-none focus:ring-2 focus:ring-blue-400" />
+          <label for="password"
+            class="absolute left-4 top-1.5 text-gray-500 text-xs transition-all peer-placeholder-shown:top-3.5 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-base peer-focus:top-1.5 peer-focus:text-xs peer-focus:text-blue-500">
+            Password
+          </label>
+        </div>
+
+        <!-- Buttons -->
+        <div class="flex flex-col gap-4 mt-6">
+          <!-- Login (Primary Button) -->
+          <button type="submit"
+            class="w-full bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-semibold py-3 rounded-xl shadow-md hover:from-blue-600 hover:to-indigo-700 active:scale-95 transition-all duration-300 border-b">
+            Register
+          </button>
+          <hr>
+          <!-- Register (Secondary Button) -->
+          <button type="button" onclick="window.location.href='login.html'"
+            class="w-full bg-white text-blue-600 font-semibold py-3 rounded-xl border border-blue-500 shadow-sm hover:bg-blue-50 active:scale-95 transition-all duration-300">
+            Login
+          </button>
+        </div>
+      </form>
+    </div>
+
+
+  </div>
+  </form>
+  </div>
+  </div>
+
+
+  <script>
+    const { createApp, ref } = Vue;
+
+    createApp({
+      setup() {
+        const username = ref('');
+        const password = ref('');
+        const email = ref('');
+
+        const login = () => {
+          window.location.href = "login.html"
+        }
+
+        const register = async () => {
+          try {
+            const body = new URLSearchParams({
+              username: username.value,
+              password: password.value,
+              email: email.value
+            });
+
+            const res = await fetch('../api/register.php', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+              body
+            });
+
+            const text = await res.text();
+            if (text.includes("success")) {
+              Swal.fire({
+                icon: "success",
+                title: "Register Successful",
+                text: "Redirecting to your Login...",
+                timer: 2000,
+                showConfirmButton: false
+              }).then(() => {
+                window.location.href = "login.html";
+              });
+            }
+          } catch (err) {
+            Swal.fire({
+              icon: "error",
+              title: "Oops...",
+              text: "Error: " + err
+            });
+          }
+        };
+
+        return { username, password, email, register, login };
+      }
+    }).mount('#app');
+  </script>
+</body>
+
+</html>
