@@ -4,6 +4,8 @@ A simple web-based inventory management system created for my lab exam.
 It includes **user authentication, inventory CRUD operations, and CSV upload/download functionality**.  
 The project was hosted on [InfinityFree](https://infinityfree.net).
 
+Project Link: https://ddeclarado31m3.wuaze.com
+
 ---
 
 ## Features
